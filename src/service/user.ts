@@ -26,4 +26,12 @@ export const userLogout =async ()=>{
     return axiosJWT.get(url)
 }
 
- 
+export const refreshToken = async ()=> {
+    const url = `${Base_URL}/refresh-token`;
+    return axiosJWT.post(url)
+}
+
+export const getCurrentUser = () => {
+    return axiosJWT.get("/api/user/me", { withCredentials: true });
+  };
+

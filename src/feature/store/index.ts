@@ -1,36 +1,45 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "../reducers/appSlice";
-import userReducer, { fetchUsers } from "../reducers/userSlice";
+import userReducer from "../reducers/userSlice";
 import axiosJWT from "@/service/axiosJWT";
+import { refreshToken } from "@/service/user";
 
 export const store = configureStore({
-    reducer:{
-        app: appReducer,
-        users: userReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
-})
+  reducer: {
+    app: appReducer,
+    users: userReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+// Token automatisch verlängern, falls abgelaufen
+let isRefreshing = false;
 
 axiosJWT.interceptors.request.use(
-    async(config) => {
-        const currentDate = new Date();
-        const exp = localStorage.getItem("exp");
-        const userId = localStorage.getItem("userId");
-        console.log("exp", exp);
-        console.log("userId", userId);
-        console.log("currentDate", currentDate.getDate());
-        
-        return config;
-    }
-    , (error) => {
-        return Promise.reject(error);
-    }
-)
+  async (config) => {
+    const exp = Number(localStorage.getItem("exp"));
+    const now = Date.now() / 1000;
 
-store.dispatch(fetchUsers());
+    if (exp && now > exp && !isRefreshing) {
+      isRefreshing = true;
+      try {
+        const res = await refreshToken();
+        console.log("AccessToken erneuert");
+        isRefreshing = false;
+      } catch (err) {
+        console.error("Token-Refresh fehlgeschlagen", err);
+        isRefreshing = false;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

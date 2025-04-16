@@ -5,20 +5,12 @@ import { Button } from "../ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card"
 import { Input } from "../ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { displayUser } from "@/feature/reducers/userSlice"
 import { useSelector } from "react-redux"
 import { RootState } from "@/feature/store"
-import { useEffect, useState } from "react"
+ 
 
 const UserPanel = () => {
-    const [userId, setUserId] = useState<string>("")
-    useEffect(() => {
-        const storedUserId = localStorage.getItem("userId")
-        setUserId(storedUserId || "")
-    }, [])
-    const user = useSelector((state: RootState) => {
-        return userId ? displayUser(state, userId) : null;
-    })
+    const user = useSelector((state: RootState) => state.users.currentUser);
     return (
         <div className="max-w-3xl mx-auto mt-10">
             <Tabs defaultValue="profile">
