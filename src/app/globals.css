@@ -118,3 +118,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.bg-marquee {
+  background-color: rgb(1, 55, 102);
+
+}
+.active {
+  @apply text-yellow-500
+}

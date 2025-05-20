@@ -31,112 +31,137 @@ const Login = () => {
     });
 
     return (
-        <div className="flex min-h-screen">
-            <div
-                className="hidden md:flex md:w-1/2"
-                style={{
-                    backgroundImage: "url('/loginsite.png')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            ></div>
-            <div
-                className="w-full md:w-1/2 flex items-center justify-center"
-                style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}
-            >
-                <div className="w-full">
-                    <div className="flex flex-col my-2 items-center">
-                        <img src="/logo.png" alt="Logo" className="w-28 h-28" />
-                        <p>Loggen Sie sich ein</p>
-                        <h2 style={{ fontSize: "24px", margin: "0 0 20px 0" }}>
-                            Login
-                        </h2>
-                    </div>
-                    <Formik
-                        initialValues={{
-                            email: "",
-                            password: "",
-                        }}
-                        validationSchema={formSchema}
-                        onSubmit={async (values, { setSubmitting }) => {
-                            try {
-                                const response = await dispatch(userLoginApi(values)).unwrap();
-                                NotificationService.success(response?.message);
-                                setTimeout(()=> {
-                                    router.push("/");
-                                },3000)
-                            } catch (error: any) {
-                                NotificationService.error(error.message);
-                            } finally {
-                                setSubmitting(false);
-                            }
-                        }}
-                    >
-                        {({ isSubmitting }) => (
-                            <Form>
-                                <div style={{ marginBottom: "15px" }}>
-                                    <label
-                                        htmlFor="email"
-                                        style={{ display: "block", marginBottom: "5px" }}
-                                    >
-                                        E-Mail
-                                    </label>
-                                    <Field
-                                        type="email"
-                                        name="email"
-                                        className="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    />
-                                    <ErrorMessage
-                                        name="email"
-                                        render={(msg) => <ErrorText>{msg}</ErrorText>}
-                                    />
-                                </div>
-
-                                <div style={{ marginBottom: "15px" }}>
-                                    <label
-                                        htmlFor="password"
-                                        style={{ display: "block", marginBottom: "5px" }}
-                                    >
-                                        Passwort
-                                    </label>
-                                    <div className="relative">
-                                        <Field
-                                            type={showPassword ? "text" : "password"}
-                                            name="password"
-                                            className="w-full p-2 pr-10 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                        />
-                                        <div
-                                            className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        >
-                                            {showPassword ? (
-                                                <Lock size={20} />
-                                            ) : (
-                                                <LockKeyholeOpen size={20} />
-                                            )}
-                                        </div>
-                                    </div>
-                                    <ErrorMessage
-                                        name="password"
-                                        render={(msg) => <ErrorText>{msg}</ErrorText>}
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className={`w-full py-2 px-4 rounded bg-blue-500 text-white hover:bg-blue-600 transition ${
-                                        isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                                    }`}
-                                >
-                                    {isSubmitting ? "Wird gesendet..." : "Login"}
-                                </button>
-                            </Form>
-                        )}
-                    </Formik>
-                </div>
+      <div className="flex min-h-screen">
+        <div
+          className="hidden md:flex md:w-1/2"
+          style={{
+            backgroundImage: "url('/loginsite.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        <div
+          className="w-full md:w-1/2 flex items-center justify-center"
+          style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}
+        >
+          <div className="w-full">
+            <div className="flex flex-col my-2 items-center">
+              <img src="/logo.png" alt="Logo" className="w-28 h-28" />
+              <p>Loggen Sie sich ein</p>
+              <h2 style={{ fontSize: "24px", margin: "0 0 20px 0" }}>Login</h2>
             </div>
+            <Formik
+              initialValues={{
+                email: "",
+                password: "",
+              }}
+              validationSchema={formSchema}
+              onSubmit={async (values, { setSubmitting }) => {
+                try {
+                  const response = await dispatch(
+                    userLoginApi(values)
+                  ).unwrap();
+                  NotificationService.success(response?.message);
+                  setTimeout(() => {
+                    router.push("/");
+                  }, 3000);
+                } catch (error: any) {
+                  NotificationService.error(error.message);
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
+            >
+              {({ isSubmitting }) => (
+                <Form>
+                  <div style={{ marginBottom: "15px" }}>
+                    <label
+                      htmlFor="email"
+                      style={{ display: "block", marginBottom: "5px" }}
+                    >
+                      E-Mail
+                    </label>
+                    <Field
+                      type="email"
+                      name="email"
+                      className="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      render={(msg) => <ErrorText>{msg}</ErrorText>}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "15px" }}>
+                    <label
+                      htmlFor="password"
+                      style={{ display: "block", marginBottom: "5px" }}
+                    >
+                      Passwort
+                    </label>
+                    <div className="relative">
+                      <Field
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        className="w-full p-2 pr-10 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      />
+                      <div
+                        className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Lock size={20} />
+                        ) : (
+                          <LockKeyholeOpen size={20} />
+                        )}
+                      </div>
+                    </div>
+                    <ErrorMessage
+                      name="password"
+                      render={(msg) => <ErrorText>{msg}</ErrorText>}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-2 px-4 rounded bg-blue-500 text-white hover:bg-blue-600 transition ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isSubmitting ? "Wird gesendet..." : "Login"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+            <div className="flex flex-col mt-4 text-sm text-gray-600">
+              <p className="text-center">
+                Passwort vergessen?{" "}
+                <a
+                  href="/passwort-vergessen"
+                  className="text-blue-600 hover:underline"
+                >
+                  Klicken Sie hier
+                </a>
+              </p>
+
+              <div className="flex justify-between items-center my-2">
+                <div className="border-t border-gray-300 w-full"></div>
+                <span className="mx-2 text-gray-500">oder</span>
+                <div className="border-t border-gray-300 w-full"></div>
+              </div>
+
+              <div>
+                <button className="w-full py-2 my-2 px-4 rounded bg-blue-500 text-white hover:bg-blue-600 transition ">
+                  <a href="/register" className="hover:text-blue-500">
+                    Registrieren
+                  </a>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     );
 };
 

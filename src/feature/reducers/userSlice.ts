@@ -1,4 +1,4 @@
-import { getCurrentUser,  refreshToken,  UserLogin, userRegister } from "@/service/user";
+import { getCurrentUser,  refreshToken,  UserLogin, userLogout, userRegister } from "@/service/api";
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { IUsers, TUser } from "@/interface";
@@ -47,19 +47,30 @@ export const userLoginApi = createAsyncThunk<
   }
 });
 
+export const userLogoutApi = createAsyncThunk("/users/userLogoutApi", async () => {
+  try {
+    const response = await userLogout();
+    localStorage.removeItem("userId");
+    localStorage.removeItem("exp");
+    return response.data;
+  } catch (error: any) {
+    const err = error?.response?.data?.message || "Something went wrong!";
+    throw new Error(err);
+    
+  }
+}
+);
+
 export const fetchCurrentUser = createAsyncThunk(
   "users/fetchCurrentUser",
   async () => {
+    console.log("➡️ Holen von aktuellem Benutzer...");
     const response = await getCurrentUser();
-    
-    const { exp, userId } = response.data.user;
+    console.log("✅ Antwort:", response.data);
 
-    if (exp) {
-      localStorage.setItem("exp", String(exp));
-    }
-    if (userId) {
-      localStorage.setItem("userId", userId);
-    }
+    const { exp, userId } = response.data.user;
+    if (exp) localStorage.setItem("exp", String(exp));
+    if (userId) localStorage.setItem("userId", userId);
 
     return response.data.user;
   }
@@ -99,7 +110,8 @@ const userSlice = createSlice({
         builder
            
             .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-              userAdapter.setOne(state, action.payload); // oder updateOne
+              userAdapter.setOne(state, action.payload); 
+              state.currentUser = action.payload; // Aktuellen Benutzer setzen
               state.status = "succeeded";
             })
             .addCase(fetchCurrentUser.rejected, (state, action) => {
@@ -115,8 +127,13 @@ const userSlice = createSlice({
                 userAdapter.setOne(state, action.payload.user);
                 state.status = "succeeded"                
             })
+            .addCase(userLogoutApi.fulfilled, (state) => {
+              userAdapter.removeAll(state); // alle Benutzer aus Adapter löschen
+              state.currentUser = null;
+              state.status = "idle";
+            })
     }
 })
 
-export const { selectAll: displayUsers, selectById: displayUser } = userAdapter.getSelectors((state: RootState) => state.users);
+export const {  selectById: displayUser } = userAdapter.getSelectors((state: RootState) => state.users);
 export default userSlice.reducer;

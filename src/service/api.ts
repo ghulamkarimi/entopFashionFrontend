@@ -4,7 +4,8 @@ import axiosJWT from "./axiosJWT";
 
 
 
-const Base_URL = "http://localhost:7004/api/user"
+const Base_URL = "http://localhost:7004/api/user";
+export const API_BASE = "http://localhost:7004/api";
 
 export const getUsers = async () => {
     const url = `${Base_URL}/all`;
@@ -32,6 +33,18 @@ export const refreshToken = async ()=> {
 }
 
 export const getCurrentUser = () => {
-    return axiosJWT.get("/api/user/me", { withCredentials: true });
+    const url = `${Base_URL}/me`;
+    return axiosJWT.get(url, { withCredentials: true });
   };
+
+export const gendersValues = () => {
+    const url = `${API_BASE}/genders`;
+    return axios.get(url)
+}
+
+export const getCategories = () => {
+    const url = `${API_BASE}/categories/allCategory`;
+    return axios.get(url)
+}
+
 
