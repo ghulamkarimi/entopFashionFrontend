@@ -1,3 +1,4 @@
+"use client"
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
 import { Label } from "@radix-ui/react-label"
 import { Switch } from "@radix-ui/react-switch"

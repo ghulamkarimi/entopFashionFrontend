@@ -1,4 +1,4 @@
-import { getCurrentUser,  refreshToken,  UserLogin, userLogout, userRegister } from "@/service/api";
+import { editUser, getCurrentUser,  refreshToken,  UserLogin, userLogout, userRegister } from "@/service/api";
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { IUsers, TUser } from "@/interface";
@@ -76,6 +76,13 @@ export const fetchCurrentUser = createAsyncThunk(
   }
 );
 
+export const editUserApi = createAsyncThunk(
+  "users/editUserApi",
+  async (user:TUser) => {
+    const response= await editUser(user);
+    return response.data;
+  })
+
 
 export const refreshAccessTokenThunk = createAsyncThunk(
   "users/refreshAccessToken",
@@ -131,6 +138,14 @@ const userSlice = createSlice({
               userAdapter.removeAll(state); // alle Benutzer aus Adapter löschen
               state.currentUser = null;
               state.status = "idle";
+            })
+            .addCase(editUserApi.fulfilled, (State, action)=> {
+              const { _id } = action.payload;
+              userAdapter.updateOne(State, {
+                id: _id,
+                changes: action.payload,
+              });
+              State.currentUser = action.payload;
             })
     }
 })

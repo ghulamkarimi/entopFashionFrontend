@@ -37,6 +37,11 @@ export const getCurrentUser = () => {
     return axiosJWT.get(url, { withCredentials: true });
   };
 
+  export const editUser = (user:TUser) => {
+    const url = `${Base_URL}/edit`;
+    return axiosJWT.put(url, user, { withCredentials: true });
+    }
+
 export const gendersValues = () => {
     const url = `${API_BASE}/genders`;
     return axios.get(url)

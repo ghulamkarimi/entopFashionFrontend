@@ -16,7 +16,6 @@ export interface IUsers {
     userId: string;
     exp: string;
     defaultAddress?: {
-        fullName: string;
         street: string;
         houseNumber: string;
         city: string;
